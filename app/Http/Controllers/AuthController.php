@@ -28,7 +28,7 @@ class AuthController extends Controller
 
             return redirect()->intended('welcome');
         }
-        return back()->withErrors(['errorLogin'=> 'Incorrect login or password']);
+        return back()->withInput($request->input())->withErrors(['errorLogin'=> 'Incorrect login or password']);
     }
 
     public function register()
@@ -39,10 +39,10 @@ class AuthController extends Controller
     public function createUser(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'surname' => 'required|string',
-            'patronymic' => 'string',
-            'login' => 'required|unique:users,login',
+            'name' => 'required|string|regex:/^[\w\- \p{Cyrillic}]*$/u',
+            'surname' => 'required|string|regex:/^[\w\- \p{Cyrillic}]*$/u',
+            'patronymic' => 'string|regex:/^[\w\- \p{Cyrillic}]*$/u',
+            'login' => 'required|unique:users,login|regex:/^[a-zA-Z0-9-]*$/i',
             'email' => 'required|unique:users,email',
             'password' => 'required|confirmed',
             'password_confirmation' => 'required',
